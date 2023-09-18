@@ -1,8 +1,8 @@
-use std::path::{Path, PathBuf};
-
 use abi_stable::std_types::{ROption, RString, RVec};
 use anyrun_plugin::*;
+use std::path::{Path, PathBuf};
 use tracing_appender::non_blocking::WorkerGuard;
+mod completion;
 
 #[derive(serde::Deserialize)]
 pub struct Config {
@@ -22,7 +22,7 @@ impl Default for Config {
 use miette::{IntoDiagnostic, Result};
 
 fn config(path: impl AsRef<Path>) -> Result<Config> {
-    let config = std::fs::read_to_string(path.as_ref()).into_diagnostic()?;
+    let config = std::fs::read_to_string(path.as_ref().join("handlr.ron")).into_diagnostic()?;
     let config: Config = ron::from_str(&config).into_diagnostic()?;
 
     Ok(config)
@@ -33,6 +33,9 @@ pub struct State {
     #[allow(dead_code)]
     guard: Option<WorkerGuard>,
 }
+
+
+
 #[init]
 fn init(cpath: RString) -> State {
     let mut config = config(&*cpath)
@@ -75,7 +78,8 @@ fn get_matches(input: RString, config: &State) -> RVec<Match> {
     if input.starts_with(&config.config.prefix) {
         vec![Match {
             title: input.clone(),
-            icon: Some("open".into()).into(),
+            // icon: Some("".into()).into(),
+            icon: ROption::RNone,
             use_pango: false,
             description: input
                 .strip_prefix(&config.config.prefix)

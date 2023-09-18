@@ -13,6 +13,7 @@ abi_stable = "0.11.2"
 anyrun-plugin = { git = "https://github.com/Kirottu/anyrun", version = "0.1.0" }
 miette = "5.10.0"
 ron = "0.8.1"
+rusqlite = "0.29.0"
 serde = { version = "1.0.188", features = ["derive"] }
 shellexpand = "3.1.0"
 tracing = "0.1.37"
